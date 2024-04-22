@@ -21,6 +21,9 @@ io.on("connection", (socket) => {
     console.log("user joined in the room: " + roomId);
   });
 
+  socket.on("typing", (room) => socket.to(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
+
   // send message in the room
   socket.on("message", (message) => {
     let parsedMessage = JSON.parse(message);

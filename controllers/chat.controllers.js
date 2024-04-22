@@ -130,7 +130,7 @@ const renameGroup = async (req, res, next) => {
       .populate("groupAdmin", "-password");
 
     if (!updatedGroupChat) {
-      return next(new ErrorHandler("grou chat not found", 404));
+      return next(new ErrorHandler("group chat not found", 404));
     }
 
     res.status(200).json({

@@ -3,7 +3,7 @@ import Message from "../models/message.model.js";
 
 const sendMessage = async (req, res, next) => {
   try {
-    const { content, chatId } = req.body;
+    const { content, attachment, chatId } = req.body;
     if (!content || !chatId) {
       return next(new ErrorHandler("Please fill all the fields", 400));
     }
@@ -13,6 +13,7 @@ const sendMessage = async (req, res, next) => {
       sender: req.user._id,
       content,
       chat: chatId,
+      ...(attachment && { attachment }),
     });
 
     // populating the document that we got

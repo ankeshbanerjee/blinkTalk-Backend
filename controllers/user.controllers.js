@@ -95,4 +95,19 @@ const getUsers = async (req, res, next) => {
   }
 };
 
-export { handleRegistration, handleLogin, getUsers };
+const fetchAuthenticatedUser = (req, res, next) => {
+  try {
+    if (req.user)
+      res.status(200).json({
+        result: {
+          user: req.user,
+        },
+        success: true,
+        message: "user fetched",
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleRegistration, handleLogin, getUsers, fetchAuthenticatedUser };
