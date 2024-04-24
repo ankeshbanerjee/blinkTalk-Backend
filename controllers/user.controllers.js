@@ -110,4 +110,41 @@ const fetchAuthenticatedUser = (req, res, next) => {
   }
 };
 
-export { handleRegistration, handleLogin, getUsers, fetchAuthenticatedUser };
+const updateUserDetails = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const updates = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+
+    for (const key in updates) {
+      if (Object.hasOwnProperty.call(updates, key)) {
+        user[key] = updates[key];
+      }
+    }
+
+    let updatedUser = await user.save();
+    updatedUser.password = undefined;
+
+    res.status(200).json({
+      result: {
+        user: updatedUser,
+      },
+      success: true,
+      message: "User details updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  handleRegistration,
+  handleLogin,
+  getUsers,
+  fetchAuthenticatedUser,
+  updateUserDetails,
+};
