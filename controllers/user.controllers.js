@@ -95,6 +95,21 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).send({
+      result: {
+        users,
+      },
+      success: true,
+      message: "users fetched",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const fetchAuthenticatedUser = (req, res, next) => {
   try {
     if (req.user)
@@ -145,6 +160,7 @@ export {
   handleRegistration,
   handleLogin,
   getUsers,
+  getAllUsers,
   fetchAuthenticatedUser,
   updateUserDetails,
 };
