@@ -203,6 +203,31 @@ const removeFromGroup = async (req, res, next) => {
   }
 };
 
+const fetchChatById = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+    const chat = await Chat.findById(id);
+
+    if (!chat) {
+      return next(new ErrorHandler("Chat not found", 404));
+    } else {
+      let updatedChat = await chat.populate("users", "-password");
+      if (updatedChat.groupAdmin) {
+        updatedChat = await updatedChat.populate("groupAdmin", "-password");
+      }
+      res.status(200).json({
+        result: {
+          chat: updatedChat,
+        },
+        success: true,
+        message: "Chat fetched successfully",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   accessChat,
   fetchChats,
@@ -210,4 +235,5 @@ export {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  fetchChatById,
 };

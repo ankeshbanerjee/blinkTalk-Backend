@@ -4,8 +4,8 @@ import Message from "../models/message.model.js";
 const sendMessage = async (req, res, next) => {
   try {
     const { content, attachment, chatId } = req.body;
-    if (!content || !chatId) {
-      return next(new ErrorHandler("Please fill all the fields", 400));
+    if (!chatId) {
+      return next(new ErrorHandler("chatId not found", 400));
     }
 
     // this promise returns a document
@@ -19,7 +19,10 @@ const sendMessage = async (req, res, next) => {
     // populating the document that we got
     // previously we had to chain 'execPopulate()' at the end to populate a document
     // but execPopulate() is removed in mongoose 6.x, so we don't need that
-    message = await message.populate("sender", "name email pic");
+    message = await message.populate(
+      "sender",
+      "name email profilePicture createdAt"
+    );
     message = await message.populate("chat");
     res.status(200).send({
       result: {
@@ -41,7 +44,7 @@ const fetchMessages = async (req, res, next) => {
     }
 
     const messages = await Message.find({ chat: chatId })
-      .populate("sender", "name email pic")
+      .populate("sender", "name email profilePicture createdAt")
       .populate("chat");
 
     res.status(200).send({
