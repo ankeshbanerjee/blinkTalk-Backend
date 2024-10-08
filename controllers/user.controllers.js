@@ -4,7 +4,7 @@ import { generateToken } from "../utils/jwt.utils.js";
 
 const handleRegistration = async (req, res, next) => {
   try {
-    const { name, email, password, pic } = req.body;
+    const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return next(new ErrorHandler("Please Enter all fields", 400));
     }
@@ -18,7 +18,6 @@ const handleRegistration = async (req, res, next) => {
       name,
       email,
       password,
-      pic,
     });
 
     if (user) {
@@ -48,6 +47,9 @@ const handleLogin = async (req, res, next) => {
       return next(new ErrorHandler("Fill all the fields", 400));
     }
     const user = await User.findOne({ email });
+    if (!user) {
+      return next(new ErrorHandler("Invalid email or password", 400));
+    }
     const isMatch = await user.checkPassword(password);
     if (user && isMatch) {
       return res.status(200).json({
@@ -156,6 +158,28 @@ const updateUserDetails = async (req, res, next) => {
   }
 };
 
+const saveFCMToken = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+    if (!user.fcmTokens.includes(token)) {
+      user.fcmTokens.push(token);
+      await user.save();
+    }
+    res.status(200).json({
+      result: {},
+      success: true,
+      message: "FCM token saved",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleRegistration,
   handleLogin,
@@ -163,4 +187,5 @@ export {
   getAllUsers,
   fetchAuthenticatedUser,
   updateUserDetails,
+  saveFCMToken,
 };
