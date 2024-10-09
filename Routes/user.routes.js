@@ -7,6 +7,7 @@ import {
   updateUserDetails,
   getAllUsers,
   saveFCMToken,
+  deleteFCMToken,
 } from "../controllers/user.controllers.js";
 import checkAuth from "../middlewares/auth.middleware.js";
 
@@ -19,6 +20,7 @@ router.get("/me", checkAuth, fetchAuthenticatedUser);
 router.patch("/update", checkAuth, updateUserDetails);
 
 router.post("/save-token", checkAuth, saveFCMToken);
+router.post("/delete-token", checkAuth, deleteFCMToken);
 
 router.route("/").get(checkAuth, getUsers);
 router.route("/all").get(checkAuth, getAllUsers);

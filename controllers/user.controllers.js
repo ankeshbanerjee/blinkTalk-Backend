@@ -180,6 +180,26 @@ const saveFCMToken = async (req, res, next) => {
   }
 };
 
+const deleteFCMToken = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+    user.fcmTokens = user.fcmTokens.filter((t) => t !== token);
+    await user.save();
+    res.status(200).json({
+      result: {},
+      success: true,
+      message: "FCM token deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleRegistration,
   handleLogin,
@@ -188,4 +208,5 @@ export {
   fetchAuthenticatedUser,
   updateUserDetails,
   saveFCMToken,
+  deleteFCMToken,
 };

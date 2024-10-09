@@ -3,7 +3,7 @@ import connectToDb from "./utils/connect.db.js";
 import http from "http";
 import { Server } from "socket.io";
 import admin from "firebase-admin";
-import serviceAccount from "./fcm/fcm-adminsdk.json" with { type: "json" };
+import serviceAccount from "./fcm-adminsdk.json" with { type: "json" };
 
 connectToDb();
 
