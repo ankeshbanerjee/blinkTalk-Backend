@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
+      unique: true,
       required: true,
     },
     password: {
@@ -17,14 +18,16 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      required: true,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
     isAdmin: {
       type: Boolean,
-      required: true,
       default: false,
+    },
+    fcmTokens: {
+      type: [{ type: String }],
+      default: [],
     },
   },
   { timestamps: true }

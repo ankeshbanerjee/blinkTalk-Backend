@@ -2,10 +2,17 @@ import app from "./app.js";
 import connectToDb from "./utils/connect.db.js";
 import http from "http";
 import { Server } from "socket.io";
+import admin from "firebase-admin";
+import serviceAccount from "./fcm-adminsdk.json" with { type: "json" };
 
 connectToDb();
 
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: "*",
